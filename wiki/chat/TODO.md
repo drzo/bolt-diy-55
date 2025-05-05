@@ -14,6 +14,8 @@
    - [x] Create Windows-specific build script
      - [x] Create PowerShell build script alternative
      - [x] Create stepped build process script
+   - [x] Fix TypeScript errors for build
+   - [x] Resolve git commit issues
    - [ ] Test building Windows app
    - [ ] Create proper installer
    - [ ] Test distribution
@@ -49,7 +51,9 @@ pnpm run electron:build:dist
 - PowerShell execution policy restrictions - Addressed with -ExecutionPolicy Bypass
 - Bash script compatibility issues on Windows - Provided PowerShell alternatives
 - File locking during dist folder cleanup - Need to make sure no locks exist when rebuilding
-- See detailed analysis in `2025_05_05_22_electron_build_issues.md`
+- TypeScript errors in Electron code - Fixed with proper type imports and assertions
+- Git commit issues - Fixed by organizing commits and resolving conflicts
+- See detailed analysis in `2025_05_05_22_electron_build_issues.md` and `2023_05_11_13_46_git_commit_fix.md`
 
 ## Notes
 - Electron builder configuration is in electron-builder.yml
