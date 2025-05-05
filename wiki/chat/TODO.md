@@ -16,6 +16,7 @@
      - [x] Create stepped build process script
    - [x] Fix TypeScript errors for build
    - [x] Resolve git commit issues
+   - [x] Fix Remix routes issue in packaged app
    - [ ] Test building Windows app
    - [ ] Create proper installer
    - [ ] Test distribution
@@ -42,6 +43,12 @@ pnpm run electron:build:win:ps
 # Build using stepped PowerShell script (best for memory issues)
 pnpm run electron:build:win:steps
 
+# Build with Remix routes patch (recommended for Windows)
+build-electron-win-patched.bat
+
+# Apply Remix routes patch to an existing build
+node fix-electron-routes.js
+
 # Build for all platforms
 pnpm run electron:build:dist
 ```
@@ -53,7 +60,11 @@ pnpm run electron:build:dist
 - File locking during dist folder cleanup - Need to make sure no locks exist when rebuilding
 - TypeScript errors in Electron code - Fixed with proper type imports and assertions
 - Git commit issues - Fixed by organizing commits and resolving conflicts
-- See detailed analysis in `2025_05_05_22_electron_build_issues.md` and `2023_05_11_13_46_git_commit_fix.md`
+- Remix routes missing in packaged app - Fixed with custom patching scripts
+- See detailed analysis in documents:
+  - `2025_05_05_22_electron_build_issues.md` - Memory and build issues
+  - `2023_05_11_13_46_git_commit_fix.md` - Git commit fixes
+  - `2023_05_11_14_remix_routes_fix.md` - Remix routes fix
 
 ## Notes
 - Electron builder configuration is in electron-builder.yml
