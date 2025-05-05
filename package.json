@@ -38,7 +38,9 @@
     "electron:build:mac": "rm -rf dist && pnpm electron:build:renderer && pnpm electron:build:deps && electron-builder --mac",
     "electron:build:win": "rm -rf dist && pnpm electron:build:renderer && pnpm electron:build:deps && electron-builder --win",
     "electron:build:linux": "rm -rf dist && pnpm electron:build:renderer && pnpm electron:build:deps && electron-builder --linux",
-    "electron:build:dist": "rm -rf dist && pnpm electron:build:renderer && pnpm electron:build:deps && electron-builder --mwl"
+    "electron:build:dist": "rm -rf dist && pnpm electron:build:renderer && pnpm electron:build:deps && electron-builder --mwl",
+    "electron:build:win:ps": "powershell -ExecutionPolicy Bypass -File build-electron-win.ps1",
+    "electron:build:win:steps": "powershell -ExecutionPolicy Bypass -File build-electron-win-steps.ps1"
   },
   "engines": {
     "node": ">=18.18.0"

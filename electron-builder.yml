@@ -35,6 +35,8 @@ win:
     - nsis
   signDlls: false
   artifactName: ${name}-${version}-${os}-${arch}.${ext}
+  sign: null
+  forceCodeSigning: false
 
 linux:
   icon: assets/icons/icon.png

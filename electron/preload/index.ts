@@ -1,4 +1,5 @@
 import { ipcRenderer, contextBridge, type IpcRendererEvent } from 'electron';
+import './remix-patch'; // Import the Remix patch
 
 console.debug('start preload.', ipcRenderer);
 
@@ -19,4 +20,29 @@ const ipc = {
   },
 };
 
+contextBridge.exposeInMainWorld('electronAPI', {
+  // Basic electron info
+  platform: process.platform,
+  appVersion: process.env.npm_package_version,
+  
+  // Remix patch status
+  remixPatchApplied: true,
+  
+  // Persona management functions
+  setPersona: (persona: any) => ipcRenderer.send('set-persona', persona),
+  onPersonaChange: (callback: (persona: any) => void) => {
+    ipcRenderer.on('persona-changed', (_event, persona) => callback(persona));
+    return () => ipcRenderer.removeAllListeners('persona-changed');
+  },
+  getPersonas: () => ipcRenderer.invoke('get-personas'),
+  getActivePersona: () => ipcRenderer.invoke('get-active-persona'),
+  
+  // Add other API functions as needed
+});
+
 contextBridge.exposeInMainWorld('ipc', ipc);
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught exception in main preload script:', error);
+});
