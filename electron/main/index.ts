@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import { createRequestHandler } from '@remix-run/node';
+import type { ServerBuild } from '@remix-run/node';
 import electron, { app, BrowserWindow, ipcMain, protocol, session, shell } from 'electron';
 import log from 'electron-log';
 import path from 'node:path';
@@ -12,9 +13,7 @@ import { createWindow } from './ui/window';
 import { initCookies, storeCookies } from './utils/cookie';
 import { loadServerBuild, serveAsset } from './utils/serve';
 import { reloadOnChange } from './utils/reload';
-import { release } from 'node:os';
-import { join } from 'node:path';
-import { loadPersonas, savePersonas, getActivePersona, setActivePersona } from './ui/persona';
+import { loadPersonas, getActivePersona, setActivePersona } from './ui/persona';
 import type { CharacterPersona } from './ui/persona';
 
 Object.assign(console, log.functions);
@@ -83,6 +82,32 @@ declare global {
   try {
     serverBuild = await loadServerBuild();
     console.log('Server build loaded successfully');
+    
+    // Additional validation to ensure routes exist
+    if (!serverBuild || !serverBuild.routes || !serverBuild.routes.routes) {
+      console.warn('Server build missing required routes property, using fallback');
+      serverBuild = {
+        ...serverBuild,
+        routes: {
+          root: {
+            id: 'root',
+            path: '',
+            module: { default: () => null }
+          },
+          routes: [
+            {
+              id: 'index',
+              parentId: 'root',
+              path: '',
+              index: true,
+              module: { default: () => 'Loading application...' }
+            }
+          ]
+        },
+        assets: serverBuild?.assets || { url: '/assets/', version: '1.0.0' },
+        entry: serverBuild?.entry || { module: { default: () => new Response('Bolt DIY is starting...') } }
+      };
+    }
   } catch (error) {
     console.error('Failed to load server build:', error);
     // Create a minimal fallback server build
@@ -147,7 +172,7 @@ declare global {
       }
 
       // Create request handler with the server build
-      const handler = createRequestHandler(serverBuild, 'production');
+      const handler = createRequestHandler(serverBuild as unknown as ServerBuild, 'production');
       console.log('Handling request with server build:', req.url);
 
       // Add extra error handling around the handler
