@@ -43,6 +43,9 @@ import { ExpoQrModal } from '~/components/workbench/ExpoQrModal';
 import { expoUrlAtom } from '~/lib/stores/qrCodeStore';
 import { useStore } from '@nanostores/react';
 import { StickToBottom, useStickToBottomContext } from '~/lib/hooks';
+import { PromptSelector } from './PromptSelector';
+import { PromptLibrary } from '~/lib/common/prompt-library';
+import { useSettings } from '~/lib/hooks/useSettings';
 
 const TEXTAREA_MIN_HEIGHT = 76;
 
@@ -134,6 +137,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     const [progressAnnotations, setProgressAnnotations] = useState<ProgressAnnotation[]>([]);
     const expoUrl = useStore(expoUrlAtom);
     const [qrModalOpen, setQrModalOpen] = useState(false);
+    const { promptId } = useSettings();
 
     useEffect(() => {
       if (expoUrl) {
@@ -458,6 +462,9 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                             apiKeys={apiKeys}
                             modelLoading={isModelLoading}
                           />
+                          <div className="mt-2">
+                            <PromptSelector />
+                          </div>
                           {(providerList || []).length > 0 &&
                             provider &&
                             (!LOCAL_PROVIDERS.includes(provider.name) || 'OpenAILike') && (
@@ -627,6 +634,19 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                           <div className={`i-ph:caret-${isModelSettingsCollapsed ? 'right' : 'down'} text-lg`} />
                           {isModelSettingsCollapsed ? <span className="text-xs">{model}</span> : <span />}
                         </IconButton>
+
+                        {isModelSettingsCollapsed && (
+                          <IconButton
+                            title="Prompt Selection"
+                            className="transition-all flex items-center gap-1 bg-bolt-elements-item-backgroundAccent text-bolt-elements-item-contentAccent"
+                            onClick={() => setIsModelSettingsCollapsed(false)}
+                          >
+                            <div className="i-ph:lightning text-lg" />
+                            <span className="text-xs">
+                              {PromptLibrary.getList().find((p) => p.id === promptId)?.label || 'Default'}
+                            </span>
+                          </IconButton>
+                        )}
                       </div>
                       {input.length > 3 ? (
                         <div className="text-xs text-bolt-elements-textTertiary">

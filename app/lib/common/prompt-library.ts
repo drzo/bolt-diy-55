@@ -1,6 +1,8 @@
 import { getSystemPrompt } from './prompts/prompts';
 import optimized from './prompts/optimized';
 import { getFineTunedPrompt } from './prompts/new-prompt';
+import { getSystemPrompt as getDTechoProPrompt } from './prompts/dtechopro';
+import { getSystemPrompt as getMDuckProPrompt } from './prompts/mduckopro';
 
 export interface PromptOptions {
   cwd: string;
@@ -39,6 +41,16 @@ export class PromptLibrary {
       label: 'Optimized Prompt (experimental)',
       description: 'an Experimental version of the prompt for lower token usage',
       get: (options) => optimized(options),
+    },
+    dtechopro: {
+      label: 'Deep Tree Echo Pro',
+      description: 'Brilliant, eccentric AI architect with vast knowledge across domains',
+      get: (options) => getDTechoProPrompt(options.cwd),
+    },
+    mduckopro: {
+      label: 'Marduk Pro',
+      description: 'Brilliant mad scientist with a flair for recursive, modular solutions',
+      get: (options) => getMDuckProPrompt(options.cwd),
     },
   };
   static getList() {
